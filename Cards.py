@@ -1,5 +1,7 @@
 import random
 
+#class Deck
+
 cardlist = []
 for outer in range(1, 5):
     for inner in range(1, 14):
@@ -15,3 +17,4 @@ print(cardlist)
 #Shuffle
 random.shuffle(cardlist)
 print(cardlist)
+
