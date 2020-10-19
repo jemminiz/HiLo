@@ -24,15 +24,11 @@
 """
 
 import Deck
+import Player
 
 LOWER = False
 HIGHER = True
-class Player:
-    def guessHighOrLow(self, card):
-        if card < 7:
-            return HIGHER
-        else:
-            return LOWER
+
 
 class Game:
     def Reset(self):
@@ -67,7 +63,7 @@ class Game:
     def __init__(self):
         # Prepare
         self.gameDeck = Deck.Deck()
-        self.player = Player()
+        self.player = Player.Player()
         self.numPoints = 0
 
 
