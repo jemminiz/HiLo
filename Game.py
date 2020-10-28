@@ -60,27 +60,50 @@ class Game:
             # 6. Else, Go to step 2
     def NumWins(self):
         return self.numPoints
-    def __init__(self):
+    def __init__(self, player):
         # Prepare
         self.gameDeck = Deck.Deck()
-        self.player = Player.Player()
+        self.player = player
         self.numPoints = 0
 
+import statistics
+import math
+def runExperiments(thisPlayer):
+    numPoints = 0
+    numGames = 0
+    allPoints = []
 
+    for k in range(0,5000):
+        newGame = Game(thisPlayer)
+        newGame.Play()
+        numPoints += newGame.NumWins()
+        allPoints.append(newGame.NumWins())
+        numGames += 1
+        thisPlayer.reset()
 
+    # 7. Calculate points and declare winner
+    #print("Num points: " + str(newGame.NumWins()))
+    print("Num points: " + str(numPoints))
+    mean = numPoints/numGames
+    print("Average points: " + str(mean))
+    stddev = statistics.stdev(allPoints)
+    print("Std Deviation: " + str(stddev))
+    print("Variance: " + str(statistics.variance(allPoints)))
+    print("Range of " + str(mean - stddev) + " to " + str(mean + stddev))
 
-
-numPoints = 0
-numGames = 0
-for k in range(0,5):
-    newGame = Game()
-    newGame.Play()
-    numPoints += newGame.NumWins()
-    numGames += 1
-
-# 7. Calculate points and declare winner
-#print("Num points: " + str(newGame.NumWins()))
-print("Num points: " + str(numPoints))
-print("Average points: " + str(numPoints/numGames))
-
+print(f"\nRunning WorstPlayerEver:")
+runExperiments(Player.WorstPlayerEver())
+print(f"\nRunning WorsePlayer:")
+runExperiments(Player.WorsePlayer())
+print(f"\nRunning BadPlayer:")
+runExperiments(Player.BadPlayer())
+print(f"\nRunning Player:")
+runExperiments(Player.Player())
+print(f"\nRunning Perfect Memory Player:")
+runExperiments(Player.MemoryPlayer(52))
+print(f"\nRunning Card Counting Player:")
+runExperiments(Player.CardCounter())
+#for k in range(1,13):
+#    print(f"\nRunning Memory Player {k}:")
+#    runExperiments(Player.MemoryPlayer(k))
 
