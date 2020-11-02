@@ -68,12 +68,12 @@ class Game:
 
 import statistics
 import math
-def runExperiments(thisPlayer):
+def runExperiments(label, thisPlayer):
     numPoints = 0
     numGames = 0
     allPoints = []
 
-    for k in range(0,5000):
+    for k in range(0,10000):
         newGame = Game(thisPlayer)
         newGame.Play()
         numPoints += newGame.NumWins()
@@ -83,26 +83,26 @@ def runExperiments(thisPlayer):
 
     # 7. Calculate points and declare winner
     #print("Num points: " + str(newGame.NumWins()))
-    print("Num points: " + str(numPoints))
+    #print("Num points: " + str(numPoints))
     mean = numPoints/numGames
-    print("Average points: " + str(mean))
     stddev = statistics.stdev(allPoints)
-    print("Std Deviation: " + str(stddev))
-    print("Variance: " + str(statistics.variance(allPoints)))
-    print("Range of " + str(mean - stddev) + " to " + str(mean + stddev))
+    print(label + "\t" + str(mean)  + "\t" + str(stddev))
+    #print("Std Deviation: " + str(stddev))
+    #print("Variance: " + str(statistics.variance(allPoints)))
+    #print("Range of " + str(mean - stddev) + " to " + str(mean + stddev))
 
-print(f"\nRunning WorstPlayerEver:")
-runExperiments(Player.WorstPlayerEver())
-print(f"\nRunning WorsePlayer:")
-runExperiments(Player.WorsePlayer())
-print(f"\nRunning BadPlayer:")
-runExperiments(Player.BadPlayer())
-print(f"\nRunning Player:")
-runExperiments(Player.Player())
-print(f"\nRunning Perfect Memory Player:")
-runExperiments(Player.MemoryPlayer(52))
-print(f"\nRunning Card Counting Player:")
-runExperiments(Player.CardCounter())
+#print(f"\nRunning WorstPlayerEver:")
+#runExperiments(Player.WorstPlayerEver())
+#print(f"\nRunning WorsePlayer:")
+#runExperiments(Player.WorsePlayer())
+#print(f"\nRunning BadPlayer:")
+#runExperiments(Player.BadPlayer())
+runExperiments("AveragePl", Player.Player())
+for cards in range(0, 51, 5):
+    runExperiments(f"Memory {cards}", Player.MemoryPlayer2(cards))
+runExperiments(f"Memory 51", Player.MemoryPlayer2(51))
+runExperiments(f"PerfectMem", Player.MemoryPlayer(51))
+runExperiments("Card Counter", Player.CardCounter())
 #for k in range(1,13):
 #    print(f"\nRunning Memory Player {k}:")
 #    runExperiments(Player.MemoryPlayer(k))

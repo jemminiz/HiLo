@@ -42,6 +42,52 @@ class MemoryPlayer:
                 numHigher += 1
         return numHigher > numLower
         
+class MemoryPlayer2:
+    def __init__(self, cardMemory):
+        self.cardMemory = cardMemory
+        self.reset()
+    def reset(self):
+        self.cardsRemembered = []
+        self.allRemainingCards = []
+        for outer in range(1, 5):
+            for inner in range(1, 14):
+                self.allRemainingCards.append(inner)
+    def guessHighOrLow(self, card):
+        # Step 1: Guess
+        numLower = (card - 1) * 4
+        numHigher = (13 - card) * 4
+
+        for memoryCard in self.cardsRemembered:
+            if card > memoryCard:
+                numLower -= 1
+            elif card < memoryCard:
+                numHigher -= 1
+
+        guess = True if numHigher > numLower else False
+        #print(f"Guess on {card} = {guess}; memory = {self.cardsRemembered}; #High={numHigher} #Low={numLower}")
+
+        # Step 2: Remember incoming card
+        self.cardsRemembered.append(card)
+        if len(self.cardsRemembered) > self.cardMemory:
+            self.cardsRemembered.pop(0)
+
+        return guess
+
+
+
+        self.allRemainingCards.remove(card)
+        numHigher = 0
+        numLower = 0
+        for c in self.allRemainingCards:
+            if card > c:
+                numLower += 1
+            elif card == c:
+                numLower += 1
+                numHigher += 1
+            else:
+                numHigher += 1
+        return numHigher > numLower
+        
 class WorstPlayerEver:
     def __init__(self):
         self.friend = MemoryPlayer(0)
@@ -125,8 +171,23 @@ def testCardCounter():
     assert(p.guessHighOrLow(8) == True)
     assert(p.guessHighOrLow(10) == True)
 
+def testFaultyMemory():
+    p = MemoryPlayer2(15)
+    p.guessHighOrLow(1)
+    p.guessHighOrLow(1)
+    p.guessHighOrLow(1)
+    p.guessHighOrLow(1)
+    p.guessHighOrLow(2)
+    p.guessHighOrLow(3)
+    p.guessHighOrLow(3)
+    p.guessHighOrLow(3)
+    p.guessHighOrLow(3)
+    p.guessHighOrLow(4)
+    p.guessHighOrLow(8)
+
 if __name__ == "__main__":
     # testPlayer()
     #testMemoryPlayer()
-    testCardCounter()
+    #testCardCounter()
+    testFaultyMemory()
     print("Done")
