@@ -23,6 +23,13 @@ class Deck:
         else:
             return False
 
+    def favorCardCounting(self):
+        return
+        self.cardlist = []
+        for outer in range(1, 5):
+            for inner in range(1, 14):
+                self.cardlist.append(inner)
+
 
 if __name__ == "__main__":
     gameDeck = Deck()
@@ -30,5 +37,7 @@ if __name__ == "__main__":
     gameDeck.draw()
     gameDeck.printCard()
     print(gameDeck.empty())
+    gameDeck.favorCardCounting()
+    gameDeck.printCard()
     ##gameDeck.shuffle()
     ##gameDeck.printCard()

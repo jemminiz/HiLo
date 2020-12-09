@@ -1,3 +1,5 @@
+import math
+
 class Player:
     def guessHighOrLow(self, card):
         if card <= 7:
@@ -106,9 +108,9 @@ class CardCounter:
         # Add or subtract from the count based on the card being drawn
         # Change the pivot point
         if card > self.pivotPoint:
-            self.pivotPoint -= 0.25
+            self.pivotPoint -= 0.125
         elif card < self.pivotPoint:
-            self.pivotPoint += 0.25
+            self.pivotPoint += 0.125
 
         return returnValue
 
@@ -152,6 +154,14 @@ def testMemoryPlayer():
     assert(p.guessHighOrLow(8) == True)
     assert(p.guessHighOrLow(11) == False)
 
+def testCardCounter2():
+    p = CardCounter()
+    assert(p.guessHighOrLow(3) == True)
+    assert(p.guessHighOrLow(10) == False)
+    assert(p.guessHighOrLow(2) == True)
+    assert(p.guessHighOrLow(5) == True)
+    assert(p.guessHighOrLow(1) == True)
+    assert(p.guessHighOrLow(7) == True)
 
 def testCardCounter():
     p = CardCounter()
@@ -189,5 +199,6 @@ if __name__ == "__main__":
     # testPlayer()
     #testMemoryPlayer()
     #testCardCounter()
-    testFaultyMemory()
+    #testFaultyMemory()
+    testCardCounter2()
     print("Done")

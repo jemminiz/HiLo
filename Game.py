@@ -25,6 +25,7 @@
 
 import Deck
 import Player
+import random
 
 LOWER = False
 HIGHER = True
@@ -63,17 +64,21 @@ class Game:
     def __init__(self, player):
         # Prepare
         self.gameDeck = Deck.Deck()
+        self.gameDeck.favorCardCounting()
         self.player = player
         self.numPoints = 0
 
 import statistics
 import math
+
+allStdDevs = []
 def runExperiments(label, thisPlayer):
     numPoints = 0
     numGames = 0
     allPoints = []
+    random.seed(12)
 
-    for k in range(0,10000):
+    for k in range(0,1000):
         newGame = Game(thisPlayer)
         newGame.Play()
         numPoints += newGame.NumWins()
@@ -86,24 +91,24 @@ def runExperiments(label, thisPlayer):
     #print("Num points: " + str(numPoints))
     mean = numPoints/numGames
     stddev = statistics.stdev(allPoints)
+    allStdDevs.append(stddev)
     print(label + "\t" + str(mean)  + "\t" + str(stddev))
     #print("Std Deviation: " + str(stddev))
     #print("Variance: " + str(statistics.variance(allPoints)))
     #print("Range of " + str(mean - stddev) + " to " + str(mean + stddev))
 
-#print(f"\nRunning WorstPlayerEver:")
-#runExperiments(Player.WorstPlayerEver())
-#print(f"\nRunning WorsePlayer:")
-#runExperiments(Player.WorsePlayer())
-#print(f"\nRunning BadPlayer:")
-#runExperiments(Player.BadPlayer())
-runExperiments("AveragePl", Player.Player())
-for cards in range(0, 51, 5):
+#runExperiments("AveragePlayer", Player.Player())
+for cards in range(0, 52, 5):
     runExperiments(f"Memory {cards}", Player.MemoryPlayer2(cards))
-runExperiments(f"Memory 51", Player.MemoryPlayer2(51))
-runExperiments(f"PerfectMem", Player.MemoryPlayer(51))
+
+totalStdDev = statistics.stdev(allStdDevs)
+totalMean = statistics.mean(allStdDevs)
+print(f"Std Dev Report:")
+print(f"Mean: {totalMean}")
+print(f"Std Dev: {totalStdDev}")
+
+#runExperiments(f"Memory 51", Player.MemoryPlayer2(51))
+#runExperiments(f"PerfectMem", Player.MemoryPlayer(51))
 runExperiments("Card Counter", Player.CardCounter())
-#for k in range(1,13):
-#    print(f"\nRunning Memory Player {k}:")
-#    runExperiments(Player.MemoryPlayer(k))
+
 
