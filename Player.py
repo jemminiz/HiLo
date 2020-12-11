@@ -1,59 +1,24 @@
 import math
 
-class Player:
-    def guessHighOrLow(self, card):
-        if card <= 7:
-            return True
-        else:
-            return False
-    def reset(self):
-        pass
-
-class BadPlayer:
-    def guessHighOrLow(self, card):
-        return False
-    def reset(self):
-        pass
-
-class WorsePlayer:
-    def guessHighOrLow(self, card):
-        return card >= 7
-    def reset(self):
-        pass
-
+# Player that knows a certain number of cards in memory.  Each time a
+# card is dealt to the player, it remembers that card, and forgets all
+# cards it knew that are older than a given threshold.  That threshold
+# is provided at construction and represents the size of the memory.
 class MemoryPlayer:
-    def __init__(self, numCards):
-        self.numCards = numCards
-        self.reset()
-    def reset(self):
-        self.memoryList = []
-        for outer in range(1, 5):
-            for inner in range(1, 14):
-                self.memoryList.append(inner)
-    def guessHighOrLow(self, card):
-        self.memoryList.remove(card)
-        numHigher = 0
-        numLower = 0
-        for c in self.memoryList:
-            if card > c:
-                numLower += 1
-            elif card == c:
-                numLower += 1
-                numHigher += 1
-            else:
-                numHigher += 1
-        return numHigher > numLower
-        
-class MemoryPlayer2:
+    # Create a memory with a given number of cards of memory
     def __init__(self, cardMemory):
         self.cardMemory = cardMemory
         self.reset()
+
+    # Prepare the player for a new game
     def reset(self):
         self.cardsRemembered = []
         self.allRemainingCards = []
         for outer in range(1, 5):
             for inner in range(1, 14):
                 self.allRemainingCards.append(inner)
+
+    # Deal the card to the player, requesting high or low
     def guessHighOrLow(self, card):
         # Step 1: Guess
         numLower = (card - 1) * 4
@@ -66,7 +31,6 @@ class MemoryPlayer2:
                 numHigher -= 1
 
         guess = True if numHigher > numLower else False
-        #print(f"Guess on {card} = {guess}; memory = {self.cardsRemembered}; #High={numHigher} #Low={numLower}")
 
         # Step 2: Remember incoming card
         self.cardsRemembered.append(card)
@@ -75,33 +39,16 @@ class MemoryPlayer2:
 
         return guess
 
-
-
-        self.allRemainingCards.remove(card)
-        numHigher = 0
-        numLower = 0
-        for c in self.allRemainingCards:
-            if card > c:
-                numLower += 1
-            elif card == c:
-                numLower += 1
-                numHigher += 1
-            else:
-                numHigher += 1
-        return numHigher > numLower
-        
-class WorstPlayerEver:
-    def __init__(self):
-        self.friend = MemoryPlayer(0)
-    def reset(self):
-        self.friend.reset()
-    def guessHighOrLow(self, card):
-        return not self.friend.guessHighOrLow(card)
-
+# Player that implements the Card Counting strategy.  It uses a pivot point
+# around 7.0, and moves that up and down based on the incoming cards, by
+# a factor of 0.125.  This was determined through trial and error.  This
+# player attempts to approximate the card remembering, without actually
+# remembering any cards.        
 class CardCounter:
     def __init__(self):
         self.pivotPoint = 7
 
+    # Deal the card to the player, adjusting the future pivot point
     def guessHighOrLow(self, card):
         returnValue = (card <= self.pivotPoint)
 
@@ -114,91 +61,6 @@ class CardCounter:
 
         return returnValue
 
+    # Prepare the player for a new game
     def reset(self):
         self.pivotPoint = 7
-
-def testPlayer():
-    p = Player()
-    assert(p.guessHighOrLow(10) == False)
-    #assert(p.guessHighOrLow(11) == True)
-    assert(p.guessHighOrLow(0) == True)
-    assert(p.guessHighOrLow(1) == True)
-    assert(p.guessHighOrLow(13) == False)
-    assert(p.guessHighOrLow(14) == False)
-    assert(p.guessHighOrLow(7) == True)
-    assert(p.guessHighOrLow(6) == True)
-    assert(p.guessHighOrLow(8) == False)
-
-def testMemoryPlayer():
-    p = MemoryPlayer(52)
-    # Confirm reset() works
-    assert(p.guessHighOrLow(2) == True)
-    assert(p.guessHighOrLow(2) == True)
-    assert(p.guessHighOrLow(2) == True)
-    assert(p.guessHighOrLow(2) == True)
-    gotExcept = False
-    try:
-        p.guessHighOrLow(2)
-    except:
-        gotExcept = True
-    assert(gotExcept)
-
-    # Resetting should allow us to get a 2 again; clean deck
-    p.reset()
-    for suit in range(0, 4):
-        assert(p.guessHighOrLow(1) == True)
-        assert(p.guessHighOrLow(2) == True)
-        assert(p.guessHighOrLow(3) == True)
-        assert(p.guessHighOrLow(4) == True)
-        assert(p.guessHighOrLow(5) == True)
-    assert(p.guessHighOrLow(8) == True)
-    assert(p.guessHighOrLow(11) == False)
-
-def testCardCounter2():
-    p = CardCounter()
-    assert(p.guessHighOrLow(3) == True)
-    assert(p.guessHighOrLow(10) == False)
-    assert(p.guessHighOrLow(2) == True)
-    assert(p.guessHighOrLow(5) == True)
-    assert(p.guessHighOrLow(1) == True)
-    assert(p.guessHighOrLow(7) == True)
-
-def testCardCounter():
-    p = CardCounter()
-    # Test that the pivot shifts slightly around 7 when giving cards low then high
-    assert(p.guessHighOrLow(4) == True)
-    assert(p.guessHighOrLow(7) == True)
-    assert(p.guessHighOrLow(12) == False)
-    assert(p.guessHighOrLow(11) == False)
-    assert(p.guessHighOrLow(11) == False)
-    assert(p.guessHighOrLow(7) == False)
-
-    # Verify if we front-load with low numbers, that high number guesses are different than default player
-    p.reset()
-    for k in range(0, 12):
-        assert(p.guessHighOrLow(1 + (k % 3)) == True)
-    # Our pivot point is exactly 10; shift it one more over, then test 10
-    assert(p.guessHighOrLow(8) == True)
-    assert(p.guessHighOrLow(10) == True)
-
-def testFaultyMemory():
-    p = MemoryPlayer2(15)
-    p.guessHighOrLow(1)
-    p.guessHighOrLow(1)
-    p.guessHighOrLow(1)
-    p.guessHighOrLow(1)
-    p.guessHighOrLow(2)
-    p.guessHighOrLow(3)
-    p.guessHighOrLow(3)
-    p.guessHighOrLow(3)
-    p.guessHighOrLow(3)
-    p.guessHighOrLow(4)
-    p.guessHighOrLow(8)
-
-if __name__ == "__main__":
-    # testPlayer()
-    #testMemoryPlayer()
-    #testCardCounter()
-    #testFaultyMemory()
-    testCardCounter2()
-    print("Done")

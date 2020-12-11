@@ -64,7 +64,6 @@ class Game:
     def __init__(self, player):
         # Prepare
         self.gameDeck = Deck.Deck()
-        self.gameDeck.favorCardCounting()
         self.player = player
         self.numPoints = 0
 
@@ -87,19 +86,13 @@ def runExperiments(label, thisPlayer):
         thisPlayer.reset()
 
     # 7. Calculate points and declare winner
-    #print("Num points: " + str(newGame.NumWins()))
-    #print("Num points: " + str(numPoints))
     mean = numPoints/numGames
     stddev = statistics.stdev(allPoints)
     allStdDevs.append(stddev)
     print(label + "\t" + str(mean)  + "\t" + str(stddev))
-    #print("Std Deviation: " + str(stddev))
-    #print("Variance: " + str(statistics.variance(allPoints)))
-    #print("Range of " + str(mean - stddev) + " to " + str(mean + stddev))
 
-#runExperiments("AveragePlayer", Player.Player())
 for cards in range(0, 52, 5):
-    runExperiments(f"Memory {cards}", Player.MemoryPlayer2(cards))
+    runExperiments(f"Memory {cards}", Player.MemoryPlayer(cards))
 
 totalStdDev = statistics.stdev(allStdDevs)
 totalMean = statistics.mean(allStdDevs)
@@ -107,8 +100,6 @@ print(f"Std Dev Report:")
 print(f"Mean: {totalMean}")
 print(f"Std Dev: {totalStdDev}")
 
-#runExperiments(f"Memory 51", Player.MemoryPlayer2(51))
-#runExperiments(f"PerfectMem", Player.MemoryPlayer(51))
 runExperiments("Card Counter", Player.CardCounter())
 
 

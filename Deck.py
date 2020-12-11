@@ -1,5 +1,6 @@
 import random
 
+# Represents a shuffled card deck
 class Deck:
     def __init__(self):
         self.cardlist = []
@@ -7,37 +8,19 @@ class Deck:
             for inner in range(1, 14):
                 self.cardlist.append(inner)
         self.shuffle()
-    
+
+    # Print all cards in the deck    
     def printCard(self):
         print(self.cardlist)
 
+    # Removes top card from the deck
     def draw(self):
         return self.cardlist.pop()
 
+    # Shuffles remaining cards
     def shuffle(self):
         random.shuffle(self.cardlist)
 
+    # Returns true if the deck has no cards
     def empty(self):
-        if len(self.cardlist) == 0:
-            return True
-        else:
-            return False
-
-    def favorCardCounting(self):
-        return
-        self.cardlist = []
-        for outer in range(1, 5):
-            for inner in range(1, 14):
-                self.cardlist.append(inner)
-
-
-if __name__ == "__main__":
-    gameDeck = Deck()
-    gameDeck.printCard()
-    gameDeck.draw()
-    gameDeck.printCard()
-    print(gameDeck.empty())
-    gameDeck.favorCardCounting()
-    gameDeck.printCard()
-    ##gameDeck.shuffle()
-    ##gameDeck.printCard()
+        return len(self.cardlist) == 0
