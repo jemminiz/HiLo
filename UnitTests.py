@@ -75,9 +75,32 @@ def testFaultyMemory():
     p.guessHighOrLow(4)
     p.guessHighOrLow(8)
 
+def testCardCounter3():
+    p = Player.CardCounter()
+    # Test that the pivot shifts slightly around 7 when giving cards low then high
+    assert(p.guessHighOrLow(4) == True)
+    assert(p.guessHighOrLow(7) == True)
+    assert(p.guessHighOrLow(12) == False)
+    assert(p.guessHighOrLow(11) == False)
+    assert(p.guessHighOrLow(11) == False)
+    assert(p.guessHighOrLow(7) == False)
+    p.reset()
+
+    for k in range(0, 12):
+        newCard = int(k / 4) + 10
+        assert(p.guessHighOrLow(newCard) == False)
+    # Pivot moves 12 times, by 0.125, or (7 - 1.5) == 5.5
+    assert(p.guessHighOrLow(7) == False)
+    # Pivot is up to 5.625
+    assert(p.guessHighOrLow(6) == False)
+    # Pivot is up to 5.75
+    assert(p.guessHighOrLow(5) == True)
+
 deckTests()
 #testPlayer()
 #testMemoryPlayer()
 #testCardCounter()
 #testFaultyMemory()
 testCardCounter2()
+testCardCounter3()
+print("Done!")
